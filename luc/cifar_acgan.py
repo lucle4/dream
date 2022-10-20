@@ -172,12 +172,6 @@ for epoch in range(num_epochs):
         gen_labels = torch.LongTensor(np.random.randint(0, n_classes, current_batchSize)).to(device)
         cls_one_hot = F.one_hot(torch.arange(0, 10), 10)
         cls_one_hot = cls_one_hot[gen_labels]
-        # gen_labels = np.random.randint(0, n_classes, current_batchSize)
-        # cls_one_hot = np.zeros((gen_labels.size, gen_labels.max() + 1))
-        # cls_one_hot[np.arange(gen_labels.size), gen_labels] = 1
-        # gen_labels = torch.Tensor(gen_labels).to(device)
-        # cls_one_hot = torch.Tensor(cls_one_hot)
-        # cls_one_hot = cls_one_hot.type(torch.LongTensor).to(device)
 
         latent = torch.cat((latent_value,cls_one_hot),dim=1)
 
@@ -203,12 +197,6 @@ for epoch in range(num_epochs):
         gen_labels = torch.LongTensor(np.random.randint(0, n_classes, current_batchSize)).to(device)
         cls_one_hot = F.one_hot(torch.arange(0, 10), 10)
         cls_one_hot = cls_one_hot[gen_labels]
-        # gen_labels = np.random.randint(0, n_classes, current_batchSize)
-        # cls_one_hot = np.zeros((gen_labels.size, gen_labels.max() + 1))
-        # cls_one_hot[np.arange(gen_labels.size), gen_labels] = 1
-        # gen_labels = torch.Tensor(gen_labels).to(device)
-        # cls_one_hot = torch.Tensor(cls_one_hot)
-        # cls_one_hot = cls_one_hot.type(torch.LongTensor).to(device)
 
         latent = torch.cat((latent_value,cls_one_hot),dim=1)
 
@@ -223,7 +211,7 @@ for epoch in range(num_epochs):
         optimizerG.step()
 
         if (batch_idx+1) % 50 == 0:
-            print('epoch: {}/{}  batch: {}/{}  G loss: {:.4f}  D loss: {:.4f}  real acc: {}%  fake acc {}%'.format(epoch+1, num_epochs, batch_idx+1, total_step, lossG.item(), lossD.item(), real_cls_acc, fake_cls_acc))
+            print('epoch: {}/{}  batch: {}/{}  G loss: {:.4f}  D loss: {:.4f}  real acc: {}%  fake acc: {}%'.format(epoch+1, num_epochs, batch_idx+1, total_step, lossG.item(), lossD.item(), real_cls_acc, fake_cls_acc))
 
         if (batch_idx+1) % 100 == 0:
             with torch.no_grad():
@@ -232,10 +220,7 @@ for epoch in range(num_epochs):
                 img_list.append(vutils.make_grid(torch.reshape(fake,(100,3,64,64)),nrow=10, normalize=True))
                 transform_PIL(img_list[-1]).save('samples/epoch {} step {}.png'.format(epoch+1, batch_idx+1))
 
-    if (epoch+1) == 1:
-        save_image_grid(images, 'real images.png')
-
-    if (epoch+1) % 1 == 0:
+    if (epoch+1) % 5 == 0:
         torch.save(G.state_dict(),'checkpoints/checkpoint epoch {}.pt'.format(epoch+1))
 
 print('finished training')
