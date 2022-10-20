@@ -26,10 +26,7 @@ class Generator(nn.Module):
 
     def __init__(self , nb_filter, n_classes):
         super(Generator, self).__init__()
-        self.fc_layer = nn.Linear(latent_size+n_classes, 100)
-        # self.label_embedding = nn.Embedding(n_classes, latent_size)
-        # self.conv1 = nn.ConvTranspose2d(nb_filter * 8, nb_filter * 4, 1, 0)
-        self.conv1 = nn.ConvTranspose2d(latent_size, nb_filter * 8, 4, 1, 0)
+        self.conv1 = nn.ConvTranspose2d(110, nb_filter * 8, 4, 1, 0)
         self.bn1 = nn.BatchNorm2d(nb_filter * 8)
         self.conv2 = nn.ConvTranspose2d(nb_filter * 8, nb_filter * 4, 4, 2, 1)
         self.bn2 = nn.BatchNorm2d(nb_filter * 4)
@@ -41,18 +38,8 @@ class Generator(nn.Module):
         self.__initialize_weights()
 
     def forward(self, input):
-        # x = torch.mul(self.label_embedding(cl), input)
-        # x = x.view(x.size(0), -1, 1, 1)
-
-        ## print(input.size()) returns torch.Size([100, 110]), it was torch.Size([100, 100])
-
-        x = self.fc_layer(input)
-        x = x.view(x.size(0), -1, 1, 1)
-        ## print(x.size() returns torch.Size([100, 512, 1, 1]), it should be torch.Size([100, 100, 1, 1])
-
+        x = input.view(input.size(0), -1, 1, 1)
         x = self.conv1(x)
-        ## print(x.size()) returns torch.Size([100, 512, 2, 2]), it should be torch.Size([100, 512, 4, 4])
-
         x = self.bn1(x)
         x = F.relu(x)
         x = self.conv2(x)
@@ -65,9 +52,6 @@ class Generator(nn.Module):
         x = self.bn4(x)
         x = F.relu(x)
         x = self.conv5(x)
-        ## print(x.size()) returns torch.Size([100, 3, 32, 32]), it should be torch.Size([100, 3, 64, 64])
-
-
         return torch.tanh(x)
 
     def __initialize_weights(self):
