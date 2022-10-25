@@ -35,14 +35,14 @@ class DreamDataset(Dataset):
             label = self.target_transform(label)
         return image, label
 
-training_dataset = DreamDataset(label_dir, img_dir, transform=transform)
-train_loader = DataLoader(training_dataset, batch_size=10, shuffle=True)
+dream_dataset = DreamDataset(label_dir, img_dir, transform=transform)
+train_loader = DataLoader(dream_dataset, batch_size=10, shuffle=True)
 
 dream_images, dream_labels = next(iter(train_loader))
 
 
-# save a random sample
+# save the first sample
 img = dream_images[0]
 print(dream_labels[0])
 
-save_image(img, '/Users/luc/Desktop/test.png', padding=2, normalize=True)
+save_image(img, './dream_dataloader_test.png', padding=2, normalize=True)

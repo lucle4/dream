@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import os
 import torch
 import torch.nn.functional as F
