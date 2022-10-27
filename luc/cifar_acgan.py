@@ -10,20 +10,29 @@ from torchvision.utils import save_image
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 
-classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
 device = 'cpu'
 
+
+classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+n_epochs = 50
 batch_size = 100
 latent_size = 100
-lr = 0.0002
-n_epochs = 500
 n_classes = len(classes)
+filter_size = 64
+lr = 0.0002
 beta_1 = 0.5
 beta_2 = 0.999
 
+transform = transforms.Compose([
+    transforms.Resize(64),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+
 def compute_cls_acc(predictLabel, target):
     return ((predictLabel.argmax(dim=1) == target)*1.0).sum()
+
 
 img_list = []
 
@@ -35,6 +44,7 @@ fixed_input = torch.cat((fixed_latent, fixed_labels), dim=1)
 for j in range(10):
 	for i in range(n_classes):
 		fixed_labels[i*10+j][i] = 1
+
 
 class Generator(nn.Module):
 
@@ -122,16 +132,12 @@ class Discriminator(nn.Module):
                 m.weight.data.normal_(1.0, 0.02)
                 m.bias.data.fill_(0)
 
-transform = transforms.Compose([
-    transforms.Resize(64),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 training_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
-train_loader = torch.utils.data.DataLoader(training_dataset, batch_size=100, shuffle=True)
+train_loader = torch.utils.data.DataLoader(training_dataset, batch_size=batch_size, shuffle=True)
 
-G = Generator(latent_size, 64, n_classes).to(device)
-D = Discriminator(64, n_classes).to(device)
+G = Generator(latent_size, filter_size, n_classes).to(device)
+D = Discriminator(filter_size, n_classes).to(device)
 
 optimizerG = torch.optim.Adam(G.parameters(), lr, betas = (beta_1, beta_2))
 optimizerD = torch.optim.Adam(D.parameters(), lr, betas = (beta_1, beta_2))
@@ -140,6 +146,7 @@ criterion_adv = nn.BCELoss()
 criterion_aux = nn.CrossEntropyLoss()
 
 total_step = len(train_loader)
+
 
 for epoch in range(n_epochs):
     for i, (input, target) in enumerate(train_loader):
@@ -182,6 +189,7 @@ for epoch in range(n_epochs):
         fake_cls_acc = compute_cls_acc(predictFLabel, target)
         fake_score = predictF
 
+
         lossD = loss_real_adv + loss_real_aux + loss_fake_adv + loss_fake_aux
 
         optimizerD.zero_grad()
@@ -203,9 +211,10 @@ for epoch in range(n_epochs):
 
         fake_images= G(latent)
 
-        predictG, predictLabel = D(fake_images)
-        lossG_adv = criterion_adv(predictG, realLabel)
-        lossG_aux = criterion_aux(predictLabel, gen_labels)
+        predictF, predictFLabel = D(fake_images)
+        lossG_adv = criterion_adv(predictF, realLabel)
+        lossG_aux = criterion_aux(predictFLabel, gen_labels)
+
 
         lossG = lossG_adv + lossG_aux
 
@@ -213,6 +222,7 @@ for epoch in range(n_epochs):
         optimizerG.zero_grad()
         lossG.backward()
         optimizerG.step()
+
 
         if (i+1) % 50 == 0:
             print('epoch: {}/{} batch: {}/{} G loss: {:.4f} D loss: {:.4f} Loss cls fake: {:.4f} Loss cls real: {:.4f} fake acc: {}% real acc: {}%'.format(
@@ -227,5 +237,6 @@ for epoch in range(n_epochs):
 
     if (epoch+1) % 10 == 0:
         torch.save(G.state_dict(),'checkpoints/checkpoint epoch {}.pt'.format(epoch+1))
+
 
 print('finished training')

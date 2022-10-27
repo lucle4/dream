@@ -7,17 +7,17 @@ import torchvision.utils as vutils
 
 device = 'cpu'
 
+
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 classes_one_hot = F.one_hot(torch.arange(0, 10), num_classes=len(classes))
 
 latent_size = 100
 n_classes = len(classes)
-loaded_epoch = 1
+loaded_epoch = 20
 
 w_1 = 0.3
 w_2 = 1 - w_1
 
-transform_PIL=transforms.ToPILImage()
 
 class Generator(nn.Module):
 
@@ -52,14 +52,15 @@ class Generator(nn.Module):
         x = self.conv5(x)
         return torch.tanh(x)
 
+
 G = Generator(latent_size, 64, n_classes).to(device)
 G.load_state_dict(torch.load('/Users/luc/Documents/Dokumente/Bildung/Humanmedizin/MA : MD-PhD/Master Thesis/Code/cifar-10 ACGAN/trainings/training 9/checkpoints/checkpoint epoch {}.pt'.format(loaded_epoch)))
 G.eval()
 
-n_images = 10
 
 fixed_latent = torch.randn(100, 100, device=device)
 fixed_labels = torch.zeros(100, 10, device=device)
+
 
 for i in range(10):
      for j in range(10):
@@ -69,12 +70,14 @@ for i in range(10):
     for j in range(10):
         fixed_labels[i*10+j][j] += w_1
 
+
 fixed_labels = fixed_labels.view(100, 10)
 
 fixed_noise = torch.cat((fixed_latent,fixed_labels), 1)
 
 img_list = []
 transform_PIL = transforms.ToPILImage()
+
 
 with torch.no_grad():
     img = G(fixed_noise).detach().cpu()

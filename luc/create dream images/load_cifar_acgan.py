@@ -9,16 +9,19 @@ from torchvision.utils import save_image
 
 device = 'cpu'
 
+
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 classes_one_hot = F.one_hot(torch.arange(0, 10), num_classes=len(classes))
 
-loaded_epoch = 1
+
+loaded_epoch = 20
 n_images = 20
 latent_size = 100
 n_classes = len(classes)
 
 w_1 = 0.3
 w_2 = 1 - w_1
+
 
 transform_PIL=transforms.ToPILImage()
 
@@ -55,9 +58,6 @@ class Generator(nn.Module):
         x = self.conv5(x)
         return torch.tanh(x)
 
-G = Generator(latent_size, 64, n_classes).to(device)
-G.load_state_dict(torch.load('/Users/luc/Documents/Dokumente/Bildung/Humanmedizin/MA : MD-PhD/Master Thesis/Code/cifar-10 ACGAN/trainings/training 9/checkpoints/checkpoint epoch {}.pt'.format(loaded_epoch)))
-G.eval()
 
 def weighing(label_one_hot, weight):
 
@@ -72,6 +72,12 @@ def weighing(label_one_hot, weight):
     label_one_hot = torch.FloatTensor(label_one_hot)
 
     return(label_one_hot)
+
+
+ G = Generator(latent_size, 64, n_classes).to(device)
+ G.load_state_dict(torch.load('/Users/luc/Documents/Dokumente/Bildung/Humanmedizin/MA : MD-PhD/Master Thesis/Code/cifar-10 ACGAN/trainings/training 9/checkpoints/checkpoint epoch {}.pt'.format(loaded_epoch)))
+ G.eval()
+
 
 # generate the images
 for i in range(n_images):

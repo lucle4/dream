@@ -3,12 +3,10 @@ from torchvision import datasets
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from skimage.util import random_noise
-import numpy as np
-import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 
 
-n_images = 10
+n_images = 20
 
 
 transform = transforms.Compose([
@@ -51,3 +49,6 @@ for i, (image, target) in enumerate(test_loader):
 
         gaussian = gaussian_noise(image[i])
         save_image(gaussian, './gaussian/{} ({}).png'.format(target[i], i+1), normalize=True)
+
+        original = image[i]
+        save_image(original, './original/{} ({}).png'.format(target[i], i+1), normalize=True)

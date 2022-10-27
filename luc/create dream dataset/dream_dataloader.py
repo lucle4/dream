@@ -9,10 +9,12 @@ from torchvision.utils import save_image
 img_dir = '/Users/luc/Documents/Dokumente/Bildung/Humanmedizin/MA : MD-PhD/Master Thesis/Code/cifar-10 ACGAN/create dataset/samples dreamed'
 label_dir = '/Users/luc/Documents/Dokumente/Bildung/Humanmedizin/MA : MD-PhD/Master Thesis/Code/cifar-10 ACGAN/create dataset/dream_dataset.csv'
 
+
 transform = transforms.Compose([
     transforms.Resize(64),
     transforms.ConvertImageDtype(float),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
 
 class DreamDataset(Dataset):
 
@@ -34,6 +36,7 @@ class DreamDataset(Dataset):
         if self.target_transform:
             label = self.target_transform(label)
         return image, label
+
 
 dream_dataset = DreamDataset(label_dir, img_dir, transform=transform)
 train_loader = DataLoader(dream_dataset, batch_size=10, shuffle=True)
