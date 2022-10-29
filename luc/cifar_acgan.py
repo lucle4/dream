@@ -12,15 +12,14 @@ from torchvision.utils import make_grid
 
 device = 'cpu'
 
-
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-n_epochs = 50
+n_epochs = 100
 batch_size = 100
 latent_size = 100
 n_classes = len(classes)
 filter_size = 64
-lr = 0.0002
+lr = 0.0005
 beta_1 = 0.5
 beta_2 = 0.999
 
@@ -31,8 +30,7 @@ transform = transforms.Compose([
 
 
 def compute_cls_acc(predictLabel, target):
-    return ((predictLabel.argmax(dim=1) == target)*1.0).sum()
-
+    return (((predictLabel.argmax(dim=1) == target) / batch_size) * 100).sum()
 
 img_list = []
 
@@ -169,7 +167,8 @@ for epoch in range(n_epochs):
         loss_real_aux = criterion_aux(predictRLabel, target)
 
         real_cls_acc = compute_cls_acc(predictRLabel, target)
-        real_score = predictR
+
+        real_score = (predictR.sum() / batch_size)
 
         # on fake data
         latent_value = torch.randn(current_batch_size, latent_size).to(device)
@@ -187,7 +186,8 @@ for epoch in range(n_epochs):
         loss_fake_aux = criterion_aux(predictFLabel, gen_labels)
 
         fake_cls_acc = compute_cls_acc(predictFLabel, target)
-        fake_score = predictF
+
+        fake_score = (predictF.sum() / batch_size)
 
 
         lossD = loss_real_adv + loss_real_aux + loss_fake_adv + loss_fake_aux
@@ -224,9 +224,9 @@ for epoch in range(n_epochs):
         optimizerG.step()
 
 
-        if (i+1) % 50 == 0:
-            print('epoch: {}/{} batch: {}/{} G loss: {:.4f} D loss: {:.4f} Loss cls fake: {:.4f} Loss cls real: {:.4f} fake acc: {}% real acc: {}%'.format(
-                epoch+1, n_epochs, i+1, total_step, lossG.item(), lossD.item(), loss_fake_aux, loss_real_aux, fake_cls_acc, real_cls_acc))
+        if (i+1) % 1 == 0:
+            print('epoch: {}/{} batch: {}/{} ｜ G loss: {:.4f} D loss: {:.4f} ｜ fake score: {:.4f} real score: {:.4f} ｜ loss fake cls: {:.4f} loss real cls: {:.4f} ｜ fake acc: {:.1f}% real acc: {:.1f}%'.format(
+                epoch+1, n_epochs, i+1, total_step, lossG.item(), lossD.item(), fake_score, real_score, loss_fake_aux, loss_real_aux, fake_cls_acc, real_cls_acc))
 
         if (i+1) % 100 == 0:
             with torch.no_grad():
