@@ -14,7 +14,7 @@ device = 'cpu'
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-n_epochs = 100
+n_epochs = 500
 batch_size = 100
 latent_size = 100
 n_classes = len(classes)
@@ -224,19 +224,19 @@ for epoch in range(n_epochs):
         optimizerG.step()
 
 
-        if (i+1) % 1 == 0:
-            print('epoch: {}/{} batch: {}/{} ｜ G loss: {:.4f} D loss: {:.4f} ｜ fake score: {:.4f} real score: {:.4f} ｜ loss fake cls: {:.4f} loss real cls: {:.4f} ｜ fake acc: {:.1f}% real acc: {:.1f}%'.format(
+        if (i+1) % 100 == 0:
+            print('epoch: {}/{} batch: {}/{} G loss: {:.4f} D loss: {:.4f} fake score: {:.4f} real score: {:.4f} loss fake cls: {:.4f} loss real cls: {:.4f} fake acc: {:.1f}% real acc: {:.1f}%'.format(
                 epoch+1, n_epochs, i+1, total_step, lossG.item(), lossD.item(), fake_score, real_score, loss_fake_aux, loss_real_aux, fake_cls_acc, real_cls_acc))
 
-        if (i+1) % 100 == 0:
+        if (i+1) % 250 == 0:
             with torch.no_grad():
                 fake = G(fixed_input).detach().cpu()
                 transform_PIL = transforms.ToPILImage()
                 img_list.append(vutils.make_grid(torch.reshape(fake, (100, 3, 64, 64)), nrow=10, normalize=True))
-                transform_PIL(img_list[-1]).save('samples/epoch {} step {}.png'.format(epoch+1, i+1))
+                transform_PIL(img_list[-1]).save('epoch {} step {}.png'.format(epoch+1, i+1))
 
-    if (epoch+1) % 10 == 0:
-        torch.save(G.state_dict(),'checkpoints/checkpoint epoch {}.pt'.format(epoch+1))
+    if (epoch+1) % 20 == 0:
+        torch.save(G.state_dict(),'checkpoint epoch {}.pt'.format(epoch+1))
 
 
 print('finished training')
