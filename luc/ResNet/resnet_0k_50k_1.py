@@ -24,11 +24,8 @@ weight_decay = 0.0005
 
 directory = os.getcwd()
 
-img_dir_original = os.path.join(directory, 'original dataset/samples_original_40k')
-label_dir_original = os.path.join(directory, 'original dataset/original_dataset_40k.csv')
-
-img_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/samples_no_interpolation_40k')
-label_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/no_interpolation_dataset_40k.csv')
+img_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/samples_no_interpolation_50k')
+label_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/no_interpolation_dataset_50k.csv')
 
 
 class Dataset(Dataset):
@@ -71,9 +68,7 @@ transform_test = transforms.Compose([
 original_dataset = Dataset(label_dir_original, img_dir_original, transform=transform_train)
 
 no_interpolation_dataset = Dataset(label_dir_no_interpolation, img_dir_no_interpolation, transform=transform_train)
-
-combined_dataset = ConcatDataset([original_dataset, no_interpolation_dataset])
-combined_loader = DataLoader(combined_dataset, batch_size=batch_size, shuffle=True)
+no_interpolation_loader = DataLoader(no_interpolation_dataset, batch_size=batch_size, shuffle=True)
 
 if len(combined_dataset) < 50000:
     print('dataset consists of only {} images'.format(len(combined_dataset)))
@@ -102,7 +97,7 @@ for epoch in range (n_epochs):
     running_test_loss = 0.0
     total = 0
 
-    for i, (images, labels) in enumerate(combined_loader):
+    for i, (images, labels) in enumerate(no_interpolation_loader):
         model.train()
 
         images = images.to(device)
@@ -144,16 +139,16 @@ for epoch in range (n_epochs):
 
     if accuracy > best_accuracy and epoch > 50:
         best_accuracy = accuracy
-        torch.save(model.state_dict(),'checkpoints_40k_10k/checkpoint epoch {}.pt'.format(epoch+1))
+        torch.save(model.state_dict(),'checkpoints_0k_50k/checkpoint epoch {}.pt'.format(epoch+1))
 
     scheduler.step()
 
     stats_epoch = 'epoch: {}/{} train loss: {:.4f}, test loss: {:.4f} test accuracy {}%'.format(epoch+1, n_epochs, train_loss.item(), test_loss_epoch, accuracy)
     stats.append(stats_epoch)
 
-    with open(r'stats_40k_10k.txt', 'w') as fp:
+    with open(r'stats_0k_50k.txt', 'w') as fp:
         for parameter in stats:
             fp.write('{}\n'.format(parameter))
 
 
-torch.save(model.state_dict(),'checkpoints_40k_10k/checkpoint epoch {}.pt'.format(n_epochs))
+torch.save(model.state_dict(),'checkpoints_0k_50k/checkpoint epoch {}.pt'.format(n_epochs))

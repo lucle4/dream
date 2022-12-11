@@ -27,8 +27,8 @@ directory = os.getcwd()
 img_dir_original = os.path.join(directory, 'original dataset/samples_original_10k')
 label_dir_original = os.path.join(directory, 'original dataset/original_dataset_10k.csv')
 
-img_dir_dream = os.path.join(directory, 'dream dataset/samples_dreamed_40k')
-label_dir_dream = os.path.join(directory, 'dream dataset/dream_dataset_40k.csv')
+img_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/samples_no_interpolation_40k')
+label_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/no_interpolation_dataset_40k.csv')
 
 
 class Dataset(Dataset):
@@ -69,12 +69,13 @@ transform_test = transforms.Compose([
 
 
 original_dataset = Dataset(label_dir_original, img_dir_original, transform=transform_train)
-dream_dataset = Dataset(label_dir_dream, img_dir_dream, transform=transform_train)
 
-combined_dataset = ConcatDataset([dream_dataset, original_dataset])
+no_interpolation_dataset = Dataset(label_dir_no_interpolation, img_dir_no_interpolation, transform=transform_train)
+
+combined_dataset = ConcatDataset([original_dataset, no_interpolation_dataset])
 combined_loader = DataLoader(combined_dataset, batch_size=batch_size, shuffle=True)
 
-if len(combined_dataset) > 50000:
+if len(combined_dataset) < 50000:
     print('dataset consists of only {} images'.format(len(combined_dataset)))
 
 test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)

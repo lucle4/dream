@@ -52,6 +52,44 @@ for i, (image, target) in enumerate(test_loader):
     if i == n_images:
         break
 
+    gaussian = gaussian_noise(image, 0.04)
+    save_image(gaussian, './gaussian (0.04)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    gaussian = gaussian_noise(image, 0.08)
+    save_image(gaussian, './gaussian (0.08)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    gaussian = gaussian_noise(image, 0.16)
+    save_image(gaussian, './gaussian (0.16)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    gaussian = gaussian_noise(image, 0.32)
+    save_image(gaussian, './gaussian (0.32)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    gaussian = gaussian_noise(image, 0.64)
+    save_image(gaussian, './gaussian (0.64)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    gaussian = gaussian_noise(image, 1.28)
+    save_image(gaussian, './gaussian (1.28)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+
+    speckle = speckle_noise(image, 0.16)
+    save_image(speckle, './speckle (0.16)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    speckle = speckle_noise(image, 0.32)
+    save_image(speckle, './speckle (0.32)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    speckle = speckle_noise(image, 0.64)
+    save_image(speckle, './speckle (0.64)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    speckle = speckle_noise(image, 1.28)
+    save_image(speckle, './speckle (1.28)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    speckle = speckle_noise(image, 2.56)
+    save_image(speckle, './speckle (2.56)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+    speckle = speckle_noise(image, 5.12)
+    save_image(speckle, './speckle (5.12)/{} ({}).png'.format(target.item(), i+1), normalize=True)
+
+
     snp = salt_pepper_noise(image, 0.02)
     save_image(snp, './snp (0.02)/{} ({}).png'.format(target.item(), i+1), normalize=True)
 
@@ -69,44 +107,6 @@ for i, (image, target) in enumerate(test_loader):
 
     snp = salt_pepper_noise(image, 0.64)
     save_image(snp, './snp (0.64)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-
-    speckle = speckle_noise(image, 0.04)
-    save_image(speckle, './speckle (0.04)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    speckle = speckle_noise(image, 0.08)
-    save_image(speckle, './speckle (0.08)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    speckle = speckle_noise(image, 0.16)
-    save_image(speckle, './speckle (0.16)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    speckle = speckle_noise(image, 0.32)
-    save_image(speckle, './speckle (0.32)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    speckle = speckle_noise(image, 0.64)
-    save_image(speckle, './speckle (0.64)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    speckle = speckle_noise(image, 1.28)
-    save_image(speckle, './speckle (1.28)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-
-    gaussian = gaussian_noise(image, 0.02)
-    save_image(gaussian, './gaussian (0.02)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    gaussian = gaussian_noise(image, 0.04)
-    save_image(gaussian, './gaussian (0.04)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    gaussian = gaussian_noise(image, 0.08)
-    save_image(gaussian, './gaussian (0.08)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    gaussian = gaussian_noise(image, 0.16)
-    save_image(gaussian, './gaussian (0.16)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    gaussian = gaussian_noise(image, 0.32)
-    save_image(gaussian, './gaussian (0.32)/{} ({}).png'.format(target.item(), i+1), normalize=True)
-
-    gaussian = gaussian_noise(image, 0.64)
-    save_image(gaussian, './gaussian (0.64)/{} ({}).png'.format(target.item(), i+1), normalize=True)
 
 
     original = image

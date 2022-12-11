@@ -1,27 +1,22 @@
 import torch
 import torch.nn as nn
-import numpy as np
-import random
 import torch.nn.functional as F
-from torchvision import datasets
 from torchvision import transforms
-from torchvision.utils import save_image
+import torchvision.utils as vutils
 
 device = 'cpu'
-
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 classes_one_hot = F.one_hot(torch.arange(0, 10), num_classes=len(classes))
 
-
-loaded_epoch = 500
-n_images = 10000
 latent_size = 100
 n_classes = len(classes)
+loaded_epoch = 500
 filter_size_g = 96
 
-w_1 = 0.3
+w_1 = 0.4
 w_2 = 1 - w_1
+
 
 class Generator(nn.Module):
 
@@ -62,44 +57,29 @@ class Generator(nn.Module):
         return x
 
 
-def weighing(label_one_hot, weight):
-
-    label_one_hot = classes_one_hot[label_one_hot].to(device)
-    label_one_hot = label_one_hot.tolist()
-    label_one_hot = [item for elem in label_one_hot for item in elem]
-
-    for i, value in enumerate(label_one_hot):
-        if label_one_hot[i] == 1:
-            label_one_hot[i] = weight
-
-    label_one_hot = torch.FloatTensor(label_one_hot).to(device)
-
-    return(label_one_hot)
-
-
 G = Generator(latent_size, filter_size_g, n_classes).to(device)
 G.load_state_dict(torch.load('checkpoints/checkpoint epoch {}.pt'.format(loaded_epoch), map_location=device))
 G.eval()
 
-transform_PIL=transforms.ToPILImage()
+fixed_latent = torch.randn(100, 100, device=device)
+fixed_labels = torch.zeros(100, 10, device=device)
 
-# generate the images
-for i in range(n_images):
-    label_1 = torch.LongTensor(np.random.randint(0, 10, 1))
-    label_2 = torch.LongTensor(np.random.randint(0, 10, 1))
+for i in range(10):
+    for j in range(10):
+        fixed_labels[j * 10 + i][j] = w_2
 
-    # make sure the labels are different
-    while label_1 == label_2:
-        label_2 = torch.LongTensor(np.random.randint(0, 10, 1))
+for i in range(10):
+    for j in range(10):
+        fixed_labels[i * 10 + j][j] += w_1
 
-    label_1_one_hot = weighing(label_1, w_1).to(device)
-    label_2_one_hot = weighing(label_2, w_2).to(device)
+fixed_labels = fixed_labels.view(100, 10)
 
-    label_combined = label_1_one_hot + label_2_one_hot.to(device)
-    label_combined = label_combined.view(1, 10)
+fixed_noise = torch.cat((fixed_latent, fixed_labels), 1)
 
-    latent_value = torch.randn(1, 100).to(device)
+img_list = []
+transform_PIL = transforms.ToPILImage()
 
-    img = G(latent_value, label_combined)
-
-    save_image(img, 'samples dreamed 10k/{}_{}_{}_{}_{}.png'.format(classes[label_2], w_2, classes[label_1], w_1, i), padding=2, normalize=True)
+with torch.no_grad():
+    img = G(fixed_latent, fixed_labels).detach().cpu()
+    img_list.append(vutils.make_grid(torch.reshape(img, (100, 3, 64, 64)), nrow=10, padding=0, normalize=True))
+    transform_PIL(img_list[-1]).save('dream grid epoch {}.png'.format(loaded_epoch))

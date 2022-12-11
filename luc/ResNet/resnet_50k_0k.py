@@ -68,6 +68,10 @@ transform_test = transforms.Compose([
 original_dataset = Dataset(label_dir_original, img_dir_original, transform=transform_train)
 original_loader = DataLoader(original_dataset, batch_size=batch_size, shuffle=True)
 
+
+if len(combined_dataset) < 50000:
+    print('dataset consists of only {} images'.format(len(combined_dataset)))
+
 test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
@@ -146,4 +150,4 @@ for epoch in range (n_epochs):
             fp.write('{}\n'.format(parameter))
 
 
-torch.save(model.state_dict(),'checkpoints_50k_0k/checkpoint epoch {}.pt'.format(epoch+1))
+torch.save(model.state_dict(),'checkpoints_50k_0k/checkpoint epoch {}.pt'.format(n_epochs))

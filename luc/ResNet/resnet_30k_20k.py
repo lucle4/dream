@@ -27,8 +27,8 @@ directory = os.getcwd()
 img_dir_original = os.path.join(directory, 'original dataset/samples_original_30k')
 label_dir_original = os.path.join(directory, 'original dataset/original_dataset_30k.csv')
 
-img_dir_dream = os.path.join(directory, 'dream dataset/samples_dreamed_20k')
-label_dir_dream = os.path.join(directory, 'dream dataset/dream_dataset_20k.csv')
+img_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/samples_no_interpolation_20k')
+label_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/no_interpolation_dataset_20k.csv')
 
 
 class Dataset(Dataset):
@@ -69,12 +69,13 @@ transform_test = transforms.Compose([
 
 
 original_dataset = Dataset(label_dir_original, img_dir_original, transform=transform_train)
-dream_dataset = Dataset(label_dir_dream, img_dir_dream, transform=transform_train)
 
-combined_dataset = ConcatDataset([dream_dataset, original_dataset])
+no_interpolation_dataset = Dataset(label_dir_no_interpolation, img_dir_no_interpolation, transform=transform_train)
+
+combined_dataset = ConcatDataset([original_dataset, no_interpolation_dataset])
 combined_loader = DataLoader(combined_dataset, batch_size=batch_size, shuffle=True)
 
-if len(combined_dataset) > 50000:
+if len(combined_dataset) < 50000:
     print('dataset consists of only {} images'.format(len(combined_dataset)))
 
 test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
@@ -155,4 +156,4 @@ for epoch in range (n_epochs):
             fp.write('{}\n'.format(parameter))
 
 
-torch.save(model.state_dict(),'checkpoints_30k_20k/checkpoint epoch {}.pt'.format(epoch+1))
+torch.save(model.state_dict(),'checkpoints_30k_20k/checkpoint epoch {}.pt'.format(n_epochs))
