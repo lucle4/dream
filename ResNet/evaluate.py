@@ -324,8 +324,6 @@ def evaluate(dataloader):
     accuracies = [accuracy_50k_0k, accuracy_40k_10k, accuracy_30k_20k, accuracy_20k_30k, accuracy_10k_40k,
                   accuracy_0k_50k_1, accuracy_0k_50k_2]
 
-    print(accuracies)
-
     for i in range(len(model_list)):
         accuracies[i] = float('{:.3f}'.format(accuracies[i]))
 
