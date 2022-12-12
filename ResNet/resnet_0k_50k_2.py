@@ -24,8 +24,8 @@ weight_decay = 0.0005
 
 directory = os.getcwd()
 
-img_dir_dream = os.path.join(directory, 'dream dataset/samples_dreamed_50k')
-label_dir_dream = os.path.join(directory, 'dream dataset/dream_dataset_50k.csv')
+img_dir_dream_2 = os.path.join(directory, 'dream 2 dataset/samples_dream_2_50k')
+label_dir_dream_2 = os.path.join(directory, 'dream 2 dataset/dream_2_dataset_50k.csv')
 
 
 class Dataset(Dataset):
@@ -65,8 +65,8 @@ transform_test = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 
-dream_dataset = Dataset(label_dir_dream, img_dir_dream, transform=transform_train)
-dream_loader = DataLoader(dream_dataset, batch_size=batch_size, shuffle=True)
+dream_2_dataset = Dataset(label_dir_dream_2, img_dir_dream_2, transform=transform_train)
+dream_2_loader = DataLoader(dream_2_dataset, batch_size=batch_size, shuffle=True)
 
 test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
@@ -92,7 +92,7 @@ for epoch in range (n_epochs):
     running_test_loss = 0.0
     total = 0
 
-    for i, (images, labels) in enumerate(dream_loader):
+    for i, (images, labels) in enumerate(dream_2_loader):
         model.train()
 
         images = images.to(device)

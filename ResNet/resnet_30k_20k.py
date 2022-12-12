@@ -27,8 +27,8 @@ directory = os.getcwd()
 img_dir_original = os.path.join(directory, 'original dataset/samples_original_30k')
 label_dir_original = os.path.join(directory, 'original dataset/original_dataset_30k.csv')
 
-img_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/samples_no_interpolation_20k')
-label_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/no_interpolation_dataset_20k.csv')
+img_dir_dream_1 = os.path.join(directory, 'dream 1 dataset/samples_dream_1_20k')
+label_dir_dream_1 = os.path.join(directory, 'dream 1 dataset/dream_1_dataset_20k.csv')
 
 
 class Dataset(Dataset):
@@ -70,9 +70,9 @@ transform_test = transforms.Compose([
 
 original_dataset = Dataset(label_dir_original, img_dir_original, transform=transform_train)
 
-no_interpolation_dataset = Dataset(label_dir_no_interpolation, img_dir_no_interpolation, transform=transform_train)
+dream_1_dataset = Dataset(label_dir_dream_1, img_dir_dream_1, transform=transform_train)
 
-combined_dataset = ConcatDataset([original_dataset, no_interpolation_dataset])
+combined_dataset = ConcatDataset([original_dataset, dream_1_dataset])
 combined_loader = DataLoader(combined_dataset, batch_size=batch_size, shuffle=True)
 
 if len(combined_dataset) < 50000:

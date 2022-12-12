@@ -24,8 +24,8 @@ weight_decay = 0.0005
 
 directory = os.getcwd()
 
-img_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/samples_no_interpolation_50k')
-label_dir_no_interpolation = os.path.join(directory, 'no interpolation dataset/no_interpolation_dataset_50k.csv')
+img_dir_dream_1 = os.path.join(directory, 'dream 1 dataset/samples_dream_1_50k')
+label_dir_dream_1 = os.path.join(directory, 'dream 1 dataset/dream_1_dataset_50k.csv')
 
 
 class Dataset(Dataset):
@@ -65,10 +65,8 @@ transform_test = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 
-original_dataset = Dataset(label_dir_original, img_dir_original, transform=transform_train)
-
-no_interpolation_dataset = Dataset(label_dir_no_interpolation, img_dir_no_interpolation, transform=transform_train)
-no_interpolation_loader = DataLoader(no_interpolation_dataset, batch_size=batch_size, shuffle=True)
+dream_1_dataset = Dataset(label_dir_dream_1, img_dir_dream_1, transform=transform_train)
+dream_1_loader = DataLoader(dream_1_dataset, batch_size=batch_size, shuffle=True)
 
 if len(combined_dataset) < 50000:
     print('dataset consists of only {} images'.format(len(combined_dataset)))
@@ -97,7 +95,7 @@ for epoch in range (n_epochs):
     running_test_loss = 0.0
     total = 0
 
-    for i, (images, labels) in enumerate(no_interpolation_loader):
+    for i, (images, labels) in enumerate(dream_1_loader):
         model.train()
 
         images = images.to(device)
