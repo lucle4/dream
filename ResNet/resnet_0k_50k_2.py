@@ -2,12 +2,10 @@ import os
 import pandas as pd
 import torch
 from torchvision import datasets, transforms
-from torch.utils.data import Dataset, TensorDataset, ConcatDataset, DataLoader
+from torch.utils.data import Dataset, DataLoader
 from torchvision.models import resnet50
 from torchvision.io import read_image
-from torchvision.utils import save_image
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -20,7 +18,6 @@ n_classes = len(classes)
 lr = 0.1
 momentum = 0.9
 weight_decay = 0.0005
-
 
 directory = os.getcwd()
 
@@ -64,7 +61,6 @@ transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-
 dream_2_dataset = Dataset(label_dir_dream_2, img_dir_dream_2, transform=transform_train)
 dream_2_loader = DataLoader(dream_2_dataset, batch_size=batch_size, shuffle=True)
 
@@ -77,16 +73,13 @@ model.fc = nn.Linear(2048, 10)
 if torch.cuda.is_available():
     model.cuda()
 
-
 criterion = nn.CrossEntropyLoss().to(device)
 optimizer = torch.optim.SGD(model.parameters(), lr, momentum=momentum, weight_decay=weight_decay)
 scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
 
-
 stats = []
-best_accuracy = 0.0
 
-for epoch in range (n_epochs):
+for epoch in range(n_epochs):
 
     running_accuracy = 0.0
     running_test_loss = 0.0
@@ -106,11 +99,9 @@ for epoch in range (n_epochs):
         train_loss.backward()
         optimizer.step()
 
-
     with torch.no_grad():
         model.eval()
         for i, (images, labels) in enumerate(test_loader):
-
             current_batch_size = images.size()[0]
 
             images = images.to(device)
@@ -128,22 +119,20 @@ for epoch in range (n_epochs):
             total += labels.size(0)
             running_accuracy += (predicted == labels).sum().item()
 
-    test_loss_epoch = running_test_loss/len(test_loader)
+    test_loss_epoch = running_test_loss / len(test_loader)
 
     accuracy = (100 * running_accuracy / total)
 
-    if accuracy > best_accuracy and epoch > 50:
-        best_accuracy = accuracy
-        torch.save(model.state_dict(),'checkpoints_0k_50k/checkpoint epoch {}.pt'.format(epoch+1))
-
     scheduler.step()
 
-    stats_epoch = 'epoch: {}/{} train loss: {:.4f}, test loss: {:.4f} test accuracy {}%'.format(epoch+1, n_epochs, train_loss.item(), test_loss_epoch, accuracy)
+    stats_epoch = 'epoch: {}/{} train loss: {:.4f}, test loss: {:.4f} test accuracy {}%'.format(epoch + 1, n_epochs,
+                                                                                                train_loss.item(),
+                                                                                                test_loss_epoch,
+                                                                                                accuracy)
     stats.append(stats_epoch)
 
     with open(r'stats_0k_50k.txt', 'w') as fp:
         for parameter in stats:
             fp.write('{}\n'.format(parameter))
 
-
-torch.save(model.state_dict(),'checkpoints_0k_50k/checkpoint epoch {}.pt'.format(n_epochs))
+torch.save(model.state_dict(), 'checkpoints_0k_50k/checkpoint epoch {}.pt'.format(n_epochs))
