@@ -219,7 +219,7 @@ def evaluate(dataloader):
     matrix_2 = [[0 for i in range(10)] for i in range(10)]
     matrix_3 = [[0 for i in range(10)] for i in range(10)]
     matrix_4 = [[0 for i in range(10)] for i in range(10)]
-    matrix_5 = [[0 for i in range(10)] for i in range(10)]
+    matrix_5 = [[0 for i in range(10)] for i in range(10)] 
     matrix_6 = [[0 for i in range(10)] for i in range(10)]
     matrix_7 = [[0 for i in range(10)] for i in range(10)]
 
@@ -237,9 +237,6 @@ def evaluate(dataloader):
 
     with torch.no_grad():
         for i, (image, label) in enumerate(dataloader):
-            print(i)
-            if i == 50:
-                break
 
             total += 1
 
@@ -253,7 +250,7 @@ def evaluate(dataloader):
             output_50k_0k = output_50k_0k.view(10)
             # output_50k_0k = softmax(output_50k_0k)
             output_50k_0k = output_50k_0k.tolist()
-            matrix_50k_0k_original = make_matrix(output_50k_0k, label_idx, matrix_1)
+            matrix_50k_0k = make_matrix(output_50k_0k, label_idx, matrix_1)
 
             output_40k_10k = model_40k_10k(image.float())
             _, predicted = torch.max(output_40k_10k, 1)
@@ -261,7 +258,7 @@ def evaluate(dataloader):
             output_40k_10k = output_40k_10k.view(10)
             # output_40k_10k = softmax(output_40k_10k)
             output_40k_10k = output_40k_10k.tolist()
-            matrix_40k_10k_original = make_matrix(output_40k_10k, label_idx, matrix_2)
+            matrix_40k_10k = make_matrix(output_40k_10k, label_idx, matrix_2)
 
             output_30k_20k = model_30k_20k(image.float())
             _, predicted = torch.max(output_30k_20k, 1)
@@ -269,7 +266,7 @@ def evaluate(dataloader):
             output_30k_20k = output_30k_20k.view(10)
             # output_30k_20k = softmax(output_30k_20k)
             output_30k_20k = output_30k_20k.tolist()
-            matrix_30k_20k_original = make_matrix(output_30k_20k, label_idx, matrix_3)
+            matrix_30k_20k = make_matrix(output_30k_20k, label_idx, matrix_3)
 
             output_20k_30k = model_20k_30k(image.float())
             _, predicted = torch.max(output_20k_30k, 1)
@@ -277,7 +274,7 @@ def evaluate(dataloader):
             output_20k_30k = output_20k_30k.view(10)
             # output_20k_30k = softmax(output_20k_30k)
             output_20k_30k = output_20k_30k.tolist()
-            matrix_20k_30k_original = make_matrix(output_20k_30k, label_idx, matrix_4)
+            matrix_20k_30k = make_matrix(output_20k_30k, label_idx, matrix_4)
 
             output_10k_40k = model_10k_40k(image.float())
             _, predicted = torch.max(output_10k_40k, 1)
@@ -285,7 +282,7 @@ def evaluate(dataloader):
             output_10k_40k = output_10k_40k.view(10)
             # output_10k_40k = softmax(output_10k_40k)
             output_10k_40k = output_10k_40k.tolist()
-            matrix_10k_40k_original = make_matrix(output_10k_40k, label_idx, matrix_5)
+            matrix_10k_40k = make_matrix(output_10k_40k, label_idx, matrix_5)
 
             output_0k_50k_1 = model_0k_50k_1(image.float())
             _, predicted = torch.max(output_0k_50k_1, 1)
@@ -293,7 +290,7 @@ def evaluate(dataloader):
             output_0k_50k_1 = output_0k_50k_1.view(10)
             # output_0k_50k_1 = softmax(output_0k_50k_1)
             output_0k_50k_1 = output_0k_50k_1.tolist()
-            matrix_0k_50k_1_original = make_matrix(output_0k_50k_1, label_idx, matrix_6)
+            matrix_0k_50k_1 = make_matrix(output_0k_50k_1, label_idx, matrix_6)
 
             output_0k_50k_2 = model_0k_50k_2(image.float())
             _, predicted = torch.max(output_0k_50k_2, 1)
@@ -301,21 +298,20 @@ def evaluate(dataloader):
             output_0k_50k_2 = output_0k_50k_2.view(10)
             # output_0k_50k_2 = softmax(output_0k_50k_2)
             output_0k_50k_2 = output_0k_50k_2.tolist()
-            matrix_0k_50k_2_original = make_matrix(output_0k_50k_2, label_idx, matrix_7)
+            matrix_0k_50k_2 = make_matrix(output_0k_50k_2, label_idx, matrix_7)
 
     for i in range(len(classes)):
         for j in range(len(classes)):
-            matrix_50k_0k_original[i][j] = float('{:.2f}'.format(matrix_50k_0k_original[i][j]))
-            matrix_40k_10k_original[i][j] = float('{:.2f}'.format(matrix_40k_10k_original[i][j]))
-            matrix_30k_20k_original[i][j] = float('{:.2f}'.format(matrix_30k_20k_original[i][j]))
-            matrix_20k_30k_original[i][j] = float('{:.2f}'.format(matrix_20k_30k_original[i][j]))
-            matrix_10k_40k_original[i][j] = float('{:.2f}'.format(matrix_10k_40k_original[i][j]))
-            matrix_0k_50k_1_original[i][j] = float('{:.2f}'.format(matrix_0k_50k_1_original[i][j]))
-            matrix_0k_50k_2_original[i][j] = float('{:.2f}'.format(matrix_0k_50k_2_original[i][j]))
+            matrix_50k_0k[i][j] = float('{:.2f}'.format(matrix_50k_0k[i][j]))
+            matrix_40k_10k[i][j] = float('{:.2f}'.format(matrix_40k_10k[i][j]))
+            matrix_30k_20k[i][j] = float('{:.2f}'.format(matrix_30k_20k[i][j]))
+            matrix_20k_30k[i][j] = float('{:.2f}'.format(matrix_20k_30k[i][j]))
+            matrix_10k_40k[i][j] = float('{:.2f}'.format(matrix_10k_40k[i][j]))
+            matrix_0k_50k_1[i][j] = float('{:.2f}'.format(matrix_0k_50k_1[i][j]))
+            matrix_0k_50k_2[i][j] = float('{:.2f}'.format(matrix_0k_50k_2[i][j]))
 
-    matrices = [matrix_50k_0k_original, matrix_40k_10k_original, matrix_30k_20k_original,
-                matrix_20k_30k_original, matrix_10k_40k_original, matrix_0k_50k_1_original,
-                matrix_0k_50k_2_original]
+    matrices = [matrix_50k_0k, matrix_40k_10k, matrix_30k_20k, matrix_20k_30k, matrix_10k_40k,
+                matrix_0k_50k_1, matrix_0k_50k_2]
 
     accuracy_50k_0k = running_accuracy_50k_0k / total
     accuracy_40k_10k = running_accuracy_40k_10k / total
