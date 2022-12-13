@@ -1,4 +1,4 @@
-Code used for the Master Thesis "Increasing object recognition robustness of convolutional neural networks by training on images created by a REM-dream-inspired generative adversarial network".
+Code used for the Master Thesis ***"Increasing object recognition robustness of convolutional neural networks by training on images created by a REM-dream-inspired generative adversarial network"***.
 
 The create_.py scripts were used to make different datasets to train or test the ResNet's performance.
 
