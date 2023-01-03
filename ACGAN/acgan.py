@@ -49,22 +49,27 @@ class Generator(nn.Module):
         self.embedding = nn.Linear(n_classes, latent_size)
 
         self.layer1 = nn.Sequential(nn.ConvTranspose2d(latent_size, nb_filter * 8, 4, 1, 0, bias=False),
-                                    nn.ReLU(True))
+                                    nn.ReLU(True)
+                                    )
 
         self.layer2 = nn.Sequential(nn.ConvTranspose2d(nb_filter * 8, nb_filter * 4, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter * 4),
-                                    nn.ReLU(True))
+                                    nn.ReLU(True)
+                                    )
 
         self.layer3 = nn.Sequential(nn.ConvTranspose2d(nb_filter * 4, nb_filter * 2, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter * 2),
-                                    nn.ReLU(True))
+                                    nn.ReLU(True)
+                                    )
 
         self.layer4 = nn.Sequential(nn.ConvTranspose2d(nb_filter * 2, nb_filter, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter),
-                                    nn.ReLU(True))
+                                    nn.ReLU(True)
+                                    )
 
         self.layer5 = nn.Sequential(nn.ConvTranspose2d(nb_filter, 3, 4, 2, 1, bias=False),
-                                    nn.Tanh())
+                                    nn.Tanh()
+                                    )
 
         self.__initialize_weights()
 
@@ -99,27 +104,31 @@ class Discriminator(nn.Module):
         self.layer1 = nn.Sequential(nn.Conv2d(3, nb_filter, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter),
                                     nn.LeakyReLU(0.2, True),
-                                    nn.Dropout2d(0.5))
+                                    nn.Dropout2d(0.5)
+                                    )
 
         self.layer2 = nn.Sequential(nn.Conv2d(nb_filter, nb_filter * 2, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter * 2),
                                     nn.LeakyReLU(0.2, True),
-                                    nn.Dropout2d(0.5))
+                                    nn.Dropout2d(0.5)
+                                    )
 
         self.layer3 = nn.Sequential(nn.Conv2d(nb_filter * 2, nb_filter * 4, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter * 4),
                                     nn.LeakyReLU(0.2, True),
-                                    nn.Dropout2d(0.5))
+                                    nn.Dropout2d(0.5)
+                                    )
 
         self.layer4 = nn.Sequential(nn.Conv2d(nb_filter * 4, nb_filter * 8, 4, 2, 1, bias=False),
                                     nn.BatchNorm2d(nb_filter * 8),
                                     nn.LeakyReLU(0.2, True),
-                                    nn.Dropout2d(0.5))
+                                    nn.Dropout2d(0.5)
+                                    )
 
         self.adv = nn.Sequential(nn.Conv2d(nb_filter * 8, 1, 4, 1, 0, bias=False),
                                  nn.Sigmoid())
 
-        self.aux = nn.Sequential(nn.Conv2d(nb_filter * 8, 11, 4, 1, 0, bias=False),
+        self.aux = nn.Sequential(nn.Conv2d(nb_filter * 8, n_classes + 1, 4, 1, 0, bias=False),
                                  nn.LogSoftmax(dim=1))
 
         self.__initialize_weights()

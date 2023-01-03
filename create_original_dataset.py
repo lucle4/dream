@@ -37,7 +37,6 @@ for i, (input, target) in enumerate(train_loader):
     label_one_hot = classes_one_hot[target]
     label_one_hot = label_one_hot.tolist()
     label_one_hot = ', '.join(map(str, label_one_hot))
-    #  print(label_one_hot)
 
     label_list.append(label_one_hot)
     img_list.append('{} {}.png'.format(classes[target], i + 1))
