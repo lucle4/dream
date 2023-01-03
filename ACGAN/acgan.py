@@ -21,6 +21,7 @@ lr_d = 0.0002
 beta_1 = 0.5
 beta_2 = 0.999
 
+
 transform = transforms.Compose([
     transforms.Resize(64),
     transforms.ToTensor(),
@@ -126,10 +127,12 @@ class Discriminator(nn.Module):
                                     )
 
         self.adv = nn.Sequential(nn.Conv2d(nb_filter * 8, 1, 4, 1, 0, bias=False),
-                                 nn.Sigmoid())
+                                 nn.Sigmoid()
+                                 )
 
         self.aux = nn.Sequential(nn.Conv2d(nb_filter * 8, n_classes + 1, 4, 1, 0, bias=False),
-                                 nn.LogSoftmax(dim=1))
+                                 nn.LogSoftmax(dim=1)
+                                 )
 
         self.__initialize_weights()
 
@@ -263,9 +266,9 @@ for epoch in range(n_epochs):
 
     stats.append(stats_epoch)
 
-    with open(r'stats.txt', 'w') as fp:
+    with open(r'stats.txt', 'w') as file:
         for parameter in stats:
-            fp.write('{}\n'.format(parameter))
+            file.write('{}\n'.format(parameter))
 
     with torch.no_grad():
         fake = G(fixed_latent, fixed_labels).detach().cpu()
