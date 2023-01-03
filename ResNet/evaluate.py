@@ -248,7 +248,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_50k_0k, 1)
             running_accuracy_50k_0k += (predicted == label_idx).sum().item()
             output_50k_0k = output_50k_0k.view(10)
-            # output_50k_0k = softmax(output_50k_0k)
             output_50k_0k = output_50k_0k.tolist()
             matrix_50k_0k = make_matrix(output_50k_0k, label_idx, matrix_1)
 
@@ -256,7 +255,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_40k_10k, 1)
             running_accuracy_40k_10k += (predicted == label_idx).sum().item()
             output_40k_10k = output_40k_10k.view(10)
-            # output_40k_10k = softmax(output_40k_10k)
             output_40k_10k = output_40k_10k.tolist()
             matrix_40k_10k = make_matrix(output_40k_10k, label_idx, matrix_2)
 
@@ -264,7 +262,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_30k_20k, 1)
             running_accuracy_30k_20k += (predicted == label_idx).sum().item()
             output_30k_20k = output_30k_20k.view(10)
-            # output_30k_20k = softmax(output_30k_20k)
             output_30k_20k = output_30k_20k.tolist()
             matrix_30k_20k = make_matrix(output_30k_20k, label_idx, matrix_3)
 
@@ -272,7 +269,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_20k_30k, 1)
             running_accuracy_20k_30k += (predicted == label_idx).sum().item()
             output_20k_30k = output_20k_30k.view(10)
-            # output_20k_30k = softmax(output_20k_30k)
             output_20k_30k = output_20k_30k.tolist()
             matrix_20k_30k = make_matrix(output_20k_30k, label_idx, matrix_4)
 
@@ -280,7 +276,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_10k_40k, 1)
             running_accuracy_10k_40k += (predicted == label_idx).sum().item()
             output_10k_40k = output_10k_40k.view(10)
-            # output_10k_40k = softmax(output_10k_40k)
             output_10k_40k = output_10k_40k.tolist()
             matrix_10k_40k = make_matrix(output_10k_40k, label_idx, matrix_5)
 
@@ -288,7 +283,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_0k_50k_1, 1)
             running_accuracy_0k_50k_1 += (predicted == label_idx).sum().item()
             output_0k_50k_1 = output_0k_50k_1.view(10)
-            # output_0k_50k_1 = softmax(output_0k_50k_1)
             output_0k_50k_1 = output_0k_50k_1.tolist()
             matrix_0k_50k_1 = make_matrix(output_0k_50k_1, label_idx, matrix_6)
 
@@ -296,7 +290,6 @@ def evaluate(dataloader):
             _, predicted = torch.max(output_0k_50k_2, 1)
             running_accuracy_0k_50k_2 += (predicted == label_idx).sum().item()
             output_0k_50k_2 = output_0k_50k_2.view(10)
-            # output_0k_50k_2 = softmax(output_0k_50k_2)
             output_0k_50k_2 = output_0k_50k_2.tolist()
             matrix_0k_50k_2 = make_matrix(output_0k_50k_2, label_idx, matrix_7)
 
