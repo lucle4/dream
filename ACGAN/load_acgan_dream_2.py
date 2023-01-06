@@ -87,7 +87,7 @@ for i in range(n_images):
     label_1 = torch.LongTensor(np.random.randint(0, 10, 1))
     label_2 = torch.LongTensor(np.random.randint(0, 10, 1))
 
-    #  make sure the labels are different
+    # make sure the labels are different
     while label_1 == label_2:
         label_2 = torch.LongTensor(np.random.randint(0, 10, 1))
 

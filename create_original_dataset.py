@@ -24,7 +24,7 @@ transform = transforms.Compose([
     transforms.Resize(64),
     transforms.ToTensor(),
     # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-])
+    ])
 
 training_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
 train_loader = torch.utils.data.DataLoader(training_dataset, batch_size=1, shuffle=True)

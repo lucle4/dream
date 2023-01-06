@@ -79,10 +79,10 @@ for i in range(len(list_images)):
     label_one_hot = ', '.join(map(str, label_one_hot))
     list_one_hot.append(label_one_hot)
 
-#  combine image name and one-hot vector:
+# combine image name and one-hot vector:
 list_csv = [list(i) for i in zip(list_images, list_one_hot)]
 
-#  save  list as a .csv
+# save  list as a .csv
 with open(csv_dir, 'w') as file:
     write = csv.writer(file)
     write.writerows(list_csv)
