@@ -8,3 +8,7 @@ This folder contains the script for training an AC-GAN on CIFAR-10 images and sc
 
 ## ResNet
 This folder contains the scripts of the ResNet-50 models with different training mixes as well as evaluate.py which was used to generate top-1-performance accuracy measurements and confusion matrices.
+
+
+![alt text](https://github.com/lucle4/dream/blob/AC-GAN/AC-GAN grid.jpg?raw=true)
+
