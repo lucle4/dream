@@ -13,3 +13,5 @@ This folder contains the scripts of the ResNet-50 models with different training
 ![alt text](https://github.com/lucle4/dream/blob/AC-GAN/AC-GAN grid.jpg?raw=true)
 
 ![Alt text](https://github.com/lucle4/dream/blob/AC-GAN/AC-GAN grid.jpg "Optional title")
+
+![Alt text](AC-GAN/AC-GAN grid.jpg "Optional title")
