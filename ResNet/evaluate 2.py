@@ -13,7 +13,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-loaded_trial = 1
+loaded_trial = 3
 
 directory = os.getcwd()
 
@@ -75,25 +75,25 @@ class Dataset(Dataset):
 
 
 model_50k_0k = resnet50(weights=None)
-model_50k_0k.fc = nn.Linear(2048, len(classes))
+model_50k_0k.fc = nn.Linear(2048, 10)
 
 model_40k_10k = resnet50(weights=None)
-model_40k_10k.fc = nn.Linear(2048, len(classes))
+model_40k_10k.fc = nn.Linear(2048, 10)
 
 model_30k_20k = resnet50(weights=None)
-model_30k_20k.fc = nn.Linear(2048, len(classes))
+model_30k_20k.fc = nn.Linear(2048, 10)
 
 model_20k_30k = resnet50(weights=None)
-model_20k_30k.fc = nn.Linear(2048, len(classes))
+model_20k_30k.fc = nn.Linear(2048, 10)
 
 model_10k_40k = resnet50(weights=None)
-model_10k_40k.fc = nn.Linear(2048, len(classes))
+model_10k_40k.fc = nn.Linear(2048, 10)
 
 model_0k_50k_1 = resnet50(weights=None)
-model_0k_50k_1.fc = nn.Linear(2048, len(classes))
+model_0k_50k_1.fc = nn.Linear(2048, 10)
 
 model_0k_50k_2 = resnet50(weights=None)
-model_0k_50k_2.fc = nn.Linear(2048, len(classes))
+model_0k_50k_2.fc = nn.Linear(2048, 10)
 
 if torch.cuda.is_available():
     model_50k_0k.cuda()
@@ -193,7 +193,9 @@ model_list = ['50k original, 0 dream', '40k original, 10k dream 1', '30k origina
 
 all_accuracies = []
 
-n_label = [0 for i in range(len(classes))]
+n_label = [0 for i in range(10)]
+
+softmax = nn.Softmax(dim=0)
 
 
 def make_matrix(model_output, current_label, matrix_n):
@@ -213,13 +215,13 @@ def make_matrix(model_output, current_label, matrix_n):
 
 
 def evaluate(dataloader):
-    matrix_1 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
-    matrix_2 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
-    matrix_3 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
-    matrix_4 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
-    matrix_5 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
-    matrix_6 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
-    matrix_7 = [[0 for _ in range(len(classes))] for _ in range(len(classes))]
+    matrix_1 = [[0 for i in range(10)] for i in range(10)]
+    matrix_2 = [[0 for i in range(10)] for i in range(10)]
+    matrix_3 = [[0 for i in range(10)] for i in range(10)]
+    matrix_4 = [[0 for i in range(10)] for i in range(10)]
+    matrix_5 = [[0 for i in range(10)] for i in range(10)] 
+    matrix_6 = [[0 for i in range(10)] for i in range(10)]
+    matrix_7 = [[0 for i in range(10)] for i in range(10)]
 
     running_accuracy_50k_0k = 0
     running_accuracy_40k_10k = 0
@@ -230,7 +232,7 @@ def evaluate(dataloader):
     running_accuracy_0k_50k_2 = 0
 
     global n_label
-    n_label = [0 for i in range(len(classes))]
+    n_label = [0 for i in range(10)]
     total = 0
 
     with torch.no_grad():
@@ -245,49 +247,49 @@ def evaluate(dataloader):
             output_50k_0k = model_50k_0k(image.float())
             _, predicted = torch.max(output_50k_0k, 1)
             running_accuracy_50k_0k += (predicted == label_idx).sum().item()
-            output_50k_0k = output_50k_0k.view(len(classes))
+            output_50k_0k = output_50k_0k.view(10)
             output_50k_0k = output_50k_0k.tolist()
             matrix_50k_0k = make_matrix(output_50k_0k, label_idx, matrix_1)
 
             output_40k_10k = model_40k_10k(image.float())
             _, predicted = torch.max(output_40k_10k, 1)
             running_accuracy_40k_10k += (predicted == label_idx).sum().item()
-            output_40k_10k = output_40k_10k.view(len(classes))
+            output_40k_10k = output_40k_10k.view(10)
             output_40k_10k = output_40k_10k.tolist()
             matrix_40k_10k = make_matrix(output_40k_10k, label_idx, matrix_2)
 
             output_30k_20k = model_30k_20k(image.float())
             _, predicted = torch.max(output_30k_20k, 1)
             running_accuracy_30k_20k += (predicted == label_idx).sum().item()
-            output_30k_20k = output_30k_20k.view(len(classes))
+            output_30k_20k = output_30k_20k.view(10)
             output_30k_20k = output_30k_20k.tolist()
             matrix_30k_20k = make_matrix(output_30k_20k, label_idx, matrix_3)
 
             output_20k_30k = model_20k_30k(image.float())
             _, predicted = torch.max(output_20k_30k, 1)
             running_accuracy_20k_30k += (predicted == label_idx).sum().item()
-            output_20k_30k = output_20k_30k.view(len(classes))
+            output_20k_30k = output_20k_30k.view(10)
             output_20k_30k = output_20k_30k.tolist()
             matrix_20k_30k = make_matrix(output_20k_30k, label_idx, matrix_4)
 
             output_10k_40k = model_10k_40k(image.float())
             _, predicted = torch.max(output_10k_40k, 1)
             running_accuracy_10k_40k += (predicted == label_idx).sum().item()
-            output_10k_40k = output_10k_40k.view(len(classes))
+            output_10k_40k = output_10k_40k.view(10)
             output_10k_40k = output_10k_40k.tolist()
             matrix_10k_40k = make_matrix(output_10k_40k, label_idx, matrix_5)
 
             output_0k_50k_1 = model_0k_50k_1(image.float())
             _, predicted = torch.max(output_0k_50k_1, 1)
             running_accuracy_0k_50k_1 += (predicted == label_idx).sum().item()
-            output_0k_50k_1 = output_0k_50k_1.view(len(classes))
+            output_0k_50k_1 = output_0k_50k_1.view(10)
             output_0k_50k_1 = output_0k_50k_1.tolist()
             matrix_0k_50k_1 = make_matrix(output_0k_50k_1, label_idx, matrix_6)
 
             output_0k_50k_2 = model_0k_50k_2(image.float())
             _, predicted = torch.max(output_0k_50k_2, 1)
             running_accuracy_0k_50k_2 += (predicted == label_idx).sum().item()
-            output_0k_50k_2 = output_0k_50k_2.view(len(classes))
+            output_0k_50k_2 = output_0k_50k_2.view(10)
             output_0k_50k_2 = output_0k_50k_2.tolist()
             matrix_0k_50k_2 = make_matrix(output_0k_50k_2, label_idx, matrix_7)
 
@@ -345,103 +347,103 @@ def write_accuracies(accuracies, noise_level):
 matrices_original, current_accuracies = evaluate(original_loader)
 write_matrices(matrices_original, current_accuracies, 'no noise')
 write_accuracies(current_accuracies, 'no noise')
-# print('no noise done')
+print('no noise done')
 all_accuracies.append('')
 
 
 matrices_noise_1_1, current_accuracies = evaluate(noise_1_1_loader)
 write_matrices(matrices_noise_1_1, current_accuracies, 'gaussian 1')
 write_accuracies(current_accuracies, 'gaussian 1')
-# print('gaussian 1 done')
+print('gaussian 1 done')
 
 matrices_noise_1_2, current_accuracies = evaluate(noise_1_2_loader)
 write_matrices(matrices_noise_1_2, current_accuracies, 'gaussian 2')
 write_accuracies(current_accuracies, 'gaussian 2')
-# print('gaussian 2 done')
+print('gaussian 2 done')
 
 matrices_noise_1_3, current_accuracies = evaluate(noise_1_3_loader)
 write_matrices(matrices_noise_1_3, current_accuracies, 'gaussian 3')
 write_accuracies(current_accuracies, 'gaussian 3')
-# print('gaussian 3 done')
+print('gaussian 3 done')
 
 matrices_noise_1_4, current_accuracies = evaluate(noise_1_4_loader)
 write_matrices(matrices_noise_1_4, current_accuracies, 'gaussian 4')
 write_accuracies(current_accuracies, 'gaussian 4')
-# print('gaussian 4 done')
+print('gaussian 4 done')
 
 matrices_noise_1_5, current_accuracies = evaluate(noise_1_5_loader)
 write_matrices(matrices_noise_1_5, current_accuracies, 'gaussian 5')
 write_accuracies(current_accuracies, 'gaussian 5')
-# print('gaussian 5 done')
+print('gaussian 5 done')
 
 matrices_noise_1_6, current_accuracies = evaluate(noise_1_6_loader)
 write_matrices(matrices_noise_1_6, current_accuracies, 'gaussian 6')
 write_accuracies(current_accuracies, 'gaussian 6')
-# print('gaussian 6 done')
+print('gaussian 6 done')
 all_accuracies.append('')
 
 
 matrices_noise_2_1, current_accuracies = evaluate(noise_2_1_loader)
 write_matrices(matrices_noise_2_1, current_accuracies, 'speckle 1')
 write_accuracies(current_accuracies, 'speckle 1')
-# print('speckle 1 done')
+print('speckle 1 done')
 
 matrices_noise_2_2, current_accuracies = evaluate(noise_2_2_loader)
 write_matrices(matrices_noise_2_2, current_accuracies, 'speckle 2')
 write_accuracies(current_accuracies, 'speckle 2')
-# print('speckle 2 done')
+print('speckle 2 done')
 
 matrices_noise_2_3, current_accuracies = evaluate(noise_2_3_loader)
 write_matrices(matrices_noise_2_3, current_accuracies, 'speckle 3')
 write_accuracies(current_accuracies, 'speckle 3')
-# print('speckle 3 done')
+print('speckle 3 done')
 
 matrices_noise_2_4, current_accuracies = evaluate(noise_2_4_loader)
 write_matrices(matrices_noise_2_4, current_accuracies, 'speckle 4')
 write_accuracies(current_accuracies, 'speckle 4')
-# print('speckle 4 done')
+print('speckle 4 done')
 
 matrices_noise_2_5, current_accuracies = evaluate(noise_2_5_loader)
 write_matrices(matrices_noise_2_5, current_accuracies, 'speckle 5')
 write_accuracies(current_accuracies, 'speckle 5')
-# print('speckle 5 done')
+print('speckle 5 done')
 
 matrices_noise_2_6, current_accuracies = evaluate(noise_2_6_loader)
 write_matrices(matrices_noise_2_6, current_accuracies, 'speckle 6')
 write_accuracies(current_accuracies, 'speckle 6')
-# print('speckle 6 done')
+print('speckle 6 done')
 all_accuracies.append('')
 
 
 matrices_noise_3_1, current_accuracies = evaluate(noise_3_1_loader)
 write_matrices(matrices_noise_3_1, current_accuracies, 'salt & pepper 1')
 write_accuracies(current_accuracies, 'snp 1')
-# print('salt & pepper 1 done')
+print('salt & pepper 1 done')
 
 matrices_noise_3_2, current_accuracies = evaluate(noise_3_2_loader)
 write_matrices(matrices_noise_3_2, current_accuracies, 'salt & pepper 2')
 write_accuracies(current_accuracies, 'snp 2')
-# print('salt & pepper 2 done')
+print('salt & pepper 2 done')
 
 matrices_noise_3_3, current_accuracies = evaluate(noise_3_3_loader)
 write_matrices(matrices_noise_3_3, current_accuracies, 'salt & pepper 3')
 write_accuracies(current_accuracies, 'snp 3')
-# print('salt & pepper 3 done')
+print('salt & pepper 3 done')
 
 matrices_noise_3_4, current_accuracies = evaluate(noise_3_4_loader)
 write_matrices(matrices_noise_3_4, current_accuracies, 'salt & pepper 4')
 write_accuracies(current_accuracies, 'snp 4')
-# print('salt & pepper 4 done')
+print('salt & pepper 4 done')
 
 matrices_noise_3_5, current_accuracies = evaluate(noise_3_5_loader)
 write_matrices(matrices_noise_3_5, current_accuracies, 'salt & pepper 5')
 write_accuracies(current_accuracies, 'snp 5')
-# print('salt & pepper 5 done')
+print('salt & pepper 5 done')
 
 matrices_noise_3_6, current_accuracies = evaluate(noise_3_6_loader)
 write_matrices(matrices_noise_3_6, current_accuracies, 'salt & pepper 6')
 write_accuracies(current_accuracies, 'snp 6')
-# print('salt & pepper 6 done')
+print('salt & pepper 6 done')
 
 
 with open(r'overall_accuracies.txt', 'w') as file:
